@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/space_Cardview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardBackgroundColor="#333333">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:padding="15dp"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:weightSum="3"
+            android:baselineAligned="false"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+                <com.app.aalap.weather.ui.CustomTextView
+                    android:id="@+id/day"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:maxLength="3"
+                    android:gravity="center"
+                    android:text="Day"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/weather_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/wclear_day" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_marginRight="5dp"
+                android:layout_height="wrap_content">
+
+                <com.app.aalap.weather.ui.CustomTextView
+                    android:id="@+id/min_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="-11"
+                    android:gravity="right"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@+id/degree"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_toRightOf="@+id/min_temp"
+                    android:src="@mipmap/degree"
+                    android:tint="@android:color/white" />
+
+                <com.app.aalap.weather.ui.CustomTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/min_temp"
+                    android:text="/"
+                    android:gravity="left"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
+
+                <com.app.aalap.weather.ui.CustomTextView
+                    android:id="@+id/max_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/min_temp"
+                    android:text="-11"
+                    android:gravity="left"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@+id/degree1"
+                    android:layout_width="5dp"
+                    android:layout_height="5dp"
+                    android:layout_toRightOf="@+id/max_temp"
+                    android:src="@mipmap/degree"
+                    android:tint="@android:color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.app.aalap.weather.ui.CustomTextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:paddingBottom="10dp"
+            android:gravity="left"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/white"
+            />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
