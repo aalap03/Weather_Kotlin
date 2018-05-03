@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.example.aalap.weatherk.Model.Currently.Currently
 import com.example.aalap.weatherk.Presenter
 import com.example.aalap.weatherk.R
 import com.example.aalap.weatherk.View.MainView
@@ -42,9 +43,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-
-        presenter.initiateWeatherRequest()
-
     }
 
     override fun onBackPressed() {
@@ -83,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                             presenter.initiateWeatherRequest()
                         } else {
-
+                            //TODO open gps scenario
                         }
                     } else {
                         Toast.makeText(this, "Can not load without location permission", Toast.LENGTH_LONG)
