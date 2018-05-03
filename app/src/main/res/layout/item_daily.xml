@@ -24,7 +24,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content">
-                <TextView
+                <com.example.aalap.weatherk.Utils.LatoTextView
                     android:id="@+id/day"
                     android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_height="wrap_content">
 
-                <TextView
+                <com.example.aalap.weatherk.Utils.LatoTextView
                     android:id="@+id/min_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                     android:src="@mipmap/degree"
                     android:tint="@android:color/white" />
 
-                <TextView
+                <com.example.aalap.weatherk.Utils.LatoTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/min_temp"
@@ -85,7 +85,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/white" />
 
-                <TextView
+                <com.example.aalap.weatherk.Utils.LatoTextView
                     android:id="@+id/max_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,17 +107,17 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.example.aalap.weatherk.Utils.LatoTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Description"
+
             android:paddingBottom="10dp"
             android:gravity="left"
             android:layout_marginLeft="20dp"
             android:textColor="@color/white"
             />
-
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

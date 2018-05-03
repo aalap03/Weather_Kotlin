@@ -17,8 +17,9 @@ class Presenter(var view: MainView) {
     val TAG="Presenter"
 
     fun initiateWeatherRequest() {
-        var retrofitService = RetrofitClient().getRetrofit().create(RetrofitService::class.java)
-        retrofitService.getWeather(37.8267, -122.4233)
+        val retrofitService = RetrofitClient().getRetrofit().create(RetrofitService::class.java)
+
+        retrofitService.getWeather(45.5017, -73.5673)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ response: Response<Forecast>? ->

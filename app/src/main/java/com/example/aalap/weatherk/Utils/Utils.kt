@@ -4,6 +4,8 @@ import com.example.aalap.weatherk.R
 
 class Utils {
 
+    val TAG = "Utils:"
+
     companion object {
         fun getCelcious(ferenheite: Double): Int {
             return ((ferenheite - 32) * 5 / 9).toInt()
@@ -41,4 +43,5 @@ class Utils {
                     else -> R.drawable.wclear_day
                 }
     }
+
 }

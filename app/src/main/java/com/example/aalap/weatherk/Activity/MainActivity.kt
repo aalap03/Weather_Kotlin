@@ -19,6 +19,7 @@ import com.example.aalap.weatherk.Adapters.AdapterHourly
 import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.Presenter
 import com.example.aalap.weatherk.R
+import com.example.aalap.weatherk.Utils.RecyclerDivider
 import com.example.aalap.weatherk.View.MainView
 import com.tbruyelle.rxpermissions2.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
@@ -104,6 +105,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         managerDaily = LinearLayoutManager(this)
 
         recyclerDaily.layoutManager = managerDaily
+        recyclerDaily.addItemDecoration(RecyclerDivider(this))
         recyclerHourly.layoutManager = managerHourly
 
     }
