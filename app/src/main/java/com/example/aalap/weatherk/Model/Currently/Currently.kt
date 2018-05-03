@@ -1,6 +1,6 @@
 package com.example.aalap.weatherk.Model.Currently
 
-import com.example.aalap.weatherk.Utils.Companion.getCelcious
+import com.example.aalap.weatherk.Utils.Utils.Companion.getCelcious
 import com.google.gson.annotations.SerializedName
 
 

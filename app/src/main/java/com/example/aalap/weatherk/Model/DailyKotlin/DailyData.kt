@@ -1,9 +1,11 @@
 package com.example.aalap.weatherk.Model.DailyKotlin
 
 import com.example.aalap.weatherk.Interfaces.Icon
-import com.example.aalap.weatherk.Utils.Companion.getCelcious
-import com.example.aalap.weatherk.Utils.Companion.getIcon
+import com.example.aalap.weatherk.Utils.Utils.Companion.getCelcious
+import com.example.aalap.weatherk.Utils.Utils.Companion.getIcon
 import com.google.gson.annotations.SerializedName
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class DailyData(
         @SerializedName("time") var time: Int, //1509944400
@@ -26,6 +28,13 @@ data class DailyData(
 
     override fun toString(): String {
         return "DailyData(time=$time, summary='$summary', icon='$icon', temperatureMin=$temperatureMin, temperatureMax=$temperatureMax)"
+    }
+
+
+    fun getDayOfTheWeek(): String {
+        val formatter = SimpleDateFormat("EEEE")
+        val dateTime = Date(time * 1000.toLong())
+        return formatter.format(dateTime)
     }
 
 

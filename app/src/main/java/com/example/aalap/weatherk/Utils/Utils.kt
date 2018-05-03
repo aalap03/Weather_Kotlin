@@ -1,4 +1,6 @@
-package com.example.aalap.weatherk
+package com.example.aalap.weatherk.Utils
+
+import com.example.aalap.weatherk.R
 
 class Utils {
 

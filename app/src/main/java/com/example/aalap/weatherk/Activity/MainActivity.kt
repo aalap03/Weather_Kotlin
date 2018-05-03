@@ -14,7 +14,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.example.aalap.weatherk.Model.Currently.Currently
+import com.example.aalap.weatherk.Adapters.AdapterDaily
+import com.example.aalap.weatherk.Adapters.AdapterHourly
+import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.Presenter
 import com.example.aalap.weatherk.R
 import com.example.aalap.weatherk.View.MainView
@@ -23,6 +25,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, MainView {
+
 
     lateinit var recyclerHourly : RecyclerView
     lateinit var recyclerDaily : RecyclerView
@@ -43,6 +46,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
+
+        setRecyclerViews()
     }
 
     override fun onBackPressed() {
@@ -111,7 +116,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    override fun showError() {
+    override fun showError(errorMsg: String) {
+        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+    }
 
+    override fun showForecast(forecast: Forecast?) {
+
+        val data = forecast!!.hourly.data
+        val adapter = AdapterHourly(this, data)
+        recyclerHourly.adapter = adapter
+
+        val dataDaily = forecast!!.daily.data
+        val adapterDaily = AdapterDaily(this, dataDaily)
+        recyclerDaily.adapter = adapterDaily
     }
 }
