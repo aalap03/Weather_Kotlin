@@ -1,6 +1,8 @@
 package com.example.aalap.weatherk
 
+import android.text.style.ForegroundColorSpan
 import android.util.Log
+import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.RetrofitCreator.RetrofitClient
 import com.example.aalap.weatherk.RetrofitCreator.RetrofitService
 import com.example.aalap.weatherk.View.MainView
@@ -25,9 +27,9 @@ class Presenter(var view: MainView) {
         retrofitService.getWeather(37.8267, -122.4233)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ response: Response<ResponseBody>? ->
+                .subscribe({ response: Response<Forecast>? ->
                     if(response!!.isSuccessful){
-                        Log.d(TAG, "Result:"+ response.body()!!.string())
+                        Log.d(TAG, "Result:"+ response.body())
                     }else{
                         Log.d(TAG, "Result:err "+ response.errorBody()!!.string())
                     }

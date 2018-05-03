@@ -25,6 +25,12 @@ data class Currently(
     fun getHumidity():Int{
         return (humidity * 100).toInt()
     }
+
+    override fun toString(): String {
+        return "Currently(time=$time, summary='$summary', icon='$icon', precipProbability=$precipProbability, temperature=$temperature, apparentTemperature=$apparentTemperature, humidity=$humidity)"
+    }
+
+
 }
 
 

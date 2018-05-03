@@ -11,4 +11,9 @@ data class Forecast(
         @SerializedName("currently") var currently: Currently,
         @SerializedName("hourly") var hourly: Hourly,
         @SerializedName("daily") var daily: Daily
-)
+){
+    override fun toString(): String {
+        return "Forecast(timezone='$timezone', currently=$currently, hourly=$hourly, daily=$daily)"
+    }
+}
+
