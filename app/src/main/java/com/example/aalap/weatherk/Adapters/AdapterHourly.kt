@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.example.aalap.weatherk.Model.HourlyKotlin.HourlyData
 import com.example.aalap.weatherk.R
 
@@ -30,6 +31,8 @@ class AdapterHourly(private var context: Context, private var items: List<Hourly
         holder.image.setImageResource(hourly.icon())
         holder.time.text = hourly.getTimeAsHour()
         holder.temp.text = ""+hourly.getTemperature()
+
+        holder.itemView.setOnClickListener({v: View? ->  Toast.makeText(context, "Feels Like:" + hourly.getFeelsLike(), Toast.LENGTH_SHORT).show() })
     }
 
 

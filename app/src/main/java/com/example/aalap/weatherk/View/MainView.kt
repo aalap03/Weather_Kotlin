@@ -10,7 +10,7 @@ interface MainView{
 
     fun setRecyclerViews()
     fun setDrawerItems()
-    fun showProgress()
+    fun showProgress(visible: Boolean)
     fun showError(errorMsg: String)
     fun showForecast(forecast: Forecast?)
 }

@@ -33,6 +33,7 @@ data class DailyData(
 
     fun getDayOfTheWeek(): String {
         val formatter = SimpleDateFormat("EEEE")
+
         val dateTime = Date(time * 1000.toLong())
         return formatter.format(dateTime)
     }

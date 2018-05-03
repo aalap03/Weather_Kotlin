@@ -1,5 +1,6 @@
 package com.example.aalap.weatherk
 
+import android.util.Log
 import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.RetrofitCreator.RetrofitClient
 import com.example.aalap.weatherk.RetrofitCreator.RetrofitService
@@ -16,10 +17,14 @@ class Presenter(var view: MainView) {
 
     val TAG="Presenter"
 
-    fun initiateWeatherRequest() {
+    fun initiateWeatherRequest(latitude: Double, longitude: Double) {
+
+        showProgress(true)
+
         val retrofitService = RetrofitClient().getRetrofit().create(RetrofitService::class.java)
 
-        retrofitService.getWeather(45.5017, -73.5673)
+        Log.d(TAG, "lon:"+longitude + ":lati:"+latitude)
+        retrofitService.getWeather(latitude, longitude)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ response: Response<Forecast>? ->
@@ -27,9 +32,19 @@ class Presenter(var view: MainView) {
                         var forecast = response.body()
                         view.showForecast(forecast)
                     }else{
-                        throw Exception(response!!.errorBody()!!.string())
+                        throw Exception(response.errorBody()!!.string())
                     }
                 }, { throwable->view.showError(throwable.localizedMessage) })
     }
+
+    fun showErrorMsg(localizedMessage: String?) {
+        showProgress(false)
+        view.showError(localizedMessage!!)
+    }
+
+    fun showProgress(isVisible: Boolean) {
+        view.showProgress(isVisible)
+    }
+
 
 }
