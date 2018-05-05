@@ -2,6 +2,7 @@ package com.example.aalap.weatherk.Utils
 
 import android.app.Application
 import android.content.Context
+import io.realm.Realm
 
 class App: Application() {
 
@@ -9,6 +10,8 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Realm.init(this)
     }
 
     init {
