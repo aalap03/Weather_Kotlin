@@ -3,6 +3,8 @@ package com.example.aalap.weatherk.Utils
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.example.aalap.weatherk.RetrofitCreator.RetrofitClient
+import com.example.aalap.weatherk.RetrofitCreator.RetrofitService
 import io.realm.Realm
 import io.realm.RealmConfiguration
 
@@ -35,6 +37,10 @@ class App: Application() {
 
         fun pref():Preference{
             return Preference(applicationContext())
+        }
+
+        fun retrofit():RetrofitService{
+            return  RetrofitClient().getRetrofit().create(RetrofitService::class.java)
         }
     }
 

@@ -13,4 +13,7 @@ interface MainView{
     fun showProgress(visible: Boolean)
     fun showError(errorMsg: String)
     fun showForecast(forecast: Forecast?)
+    fun showPlaceInfo(placeId: String?)
+    fun noPlaceId()
+    fun showPlaceName(locality: String?)
 }
