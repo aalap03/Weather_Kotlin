@@ -15,26 +15,39 @@ import retrofit2.Response
 
 class Presenter(var view: MainView) {
 
-    val TAG="Presenter"
+    val TAG = "Presenter"
 
     fun initiateWeatherRequest(latitude: Double, longitude: Double) {
+
+        Log.d(TAG, "Requesting...")
+        Log.d(TAG, latitude.toString())
+        Log.d(TAG, longitude.toString())
 
         showProgress(true)
 
         val retrofitService = RetrofitClient().getRetrofit().create(RetrofitService::class.java)
 
-        Log.d(TAG, "lon:"+longitude + ":lati:"+latitude)
         retrofitService.getWeather(latitude, longitude)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ response: Response<Forecast>? ->
-                    if(response!!.isSuccessful) {
-                        var forecast = response.body()
+                    if (response!!.isSuccessful) {
+                        val forecast = response.body()
+                        val timeZone = forecast!!.timezone
+
+                        for (dailyData in forecast.daily.data){
+                            dailyData.timeZone = timeZone
+                        }
+                        for (hourlyData in forecast.hourly.data){
+                            hourlyData.timeZone = timeZone
+                        }
+
                         view.showForecast(forecast)
-                    }else{
+
+                    } else {
                         throw Exception(response.errorBody()!!.string())
                     }
-                }, { throwable->view.showError(throwable.localizedMessage) })
+                }, { throwable -> view.showError(throwable.localizedMessage) })
     }
 
     fun showErrorMsg(localizedMessage: String?) {

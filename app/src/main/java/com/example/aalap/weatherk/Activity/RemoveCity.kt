@@ -11,7 +11,7 @@ import com.vicpin.krealmextensions.queryAll
 
 class RemoveCity : AppCompatActivity() {
 
-    lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

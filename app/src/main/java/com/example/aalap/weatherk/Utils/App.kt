@@ -2,7 +2,9 @@ package com.example.aalap.weatherk.Utils
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import io.realm.Realm
+import io.realm.RealmConfiguration
 
 class App: Application() {
 
@@ -10,8 +12,14 @@ class App: Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         Realm.init(this)
+
+        val realmConfiguration = RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build()
+
+        Realm.setDefaultConfiguration(realmConfiguration)
+
     }
 
     init {
@@ -25,6 +33,11 @@ class App: Application() {
             return instance!!.applicationContext
         }
 
+        fun pref():Preference{
+            return Preference(applicationContext())
+        }
     }
+
+
 
 }

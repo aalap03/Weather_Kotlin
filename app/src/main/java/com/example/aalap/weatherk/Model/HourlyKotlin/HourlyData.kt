@@ -15,6 +15,7 @@ data class HourlyData(
         @SerializedName("icon") var icon: String, //clear-day
         @SerializedName("temperature") var temperature: Double, //61.43
         @SerializedName("apparentTemperature") var apparentTemperature: Double /*61.43*/) : ConvertFerenheite, Icon {
+        lateinit var timeZone: String
 
     override fun icon(): Int {
         return getIcon(icon)
@@ -35,6 +36,7 @@ data class HourlyData(
 
     fun getTimeAsHour(): String {
         val formatter = SimpleDateFormat("h a")
+        formatter.timeZone = TimeZone.getTimeZone(timeZone)
         val dateTime = Date(time* 1000.toLong())
         return formatter.format(dateTime)
 

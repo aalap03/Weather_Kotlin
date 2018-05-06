@@ -12,7 +12,8 @@ data class DailyData(
         @SerializedName("summary") var summary: String, //Rain starting in the afternoon, continuing until evening.
         @SerializedName("icon") var icon: String, //rain
         @SerializedName("temperatureMin") var temperatureMin: Double, //52.08
-        @SerializedName("temperatureMax") var temperatureMax: Double //66.35
+        @SerializedName("temperatureMax") var temperatureMax: Double, //66.35
+        var timeZone:String
 ) : Icon {
     override fun icon(): Int {
         return getIcon(icon)
@@ -33,7 +34,7 @@ data class DailyData(
 
     fun getDayOfTheWeek(): String {
         val formatter = SimpleDateFormat("EEEE")
-
+        formatter.timeZone = TimeZone.getTimeZone(timeZone)
         val dateTime = Date(time * 1000.toLong())
         return formatter.format(dateTime)
     }

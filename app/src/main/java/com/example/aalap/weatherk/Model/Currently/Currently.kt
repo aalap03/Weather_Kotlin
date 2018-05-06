@@ -8,7 +8,7 @@ data class Currently(
         @SerializedName("time") var time: Int, //1525306111
         @SerializedName("summary") var summary: String, //Clear
         @SerializedName("icon") var icon: String, //clear-day
-        @SerializedName("precipProbability") var precipProbability: Int, //0
+        @SerializedName("precipProbability") var precipProbability: Double, //0
         @SerializedName("temperature") var temperature: Double, //61.21
         @SerializedName("apparentTemperature") var apparentTemperature: Double, //61.21
         @SerializedName("humidity") var humidity: Double //0.66
