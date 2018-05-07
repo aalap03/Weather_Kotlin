@@ -106,12 +106,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navView = findViewById(R.id.nav_view)
 
-        val navMainView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, drawerMain, false)
+        val navMainView = navView.getHeaderView(0)
 
         navBackground = navMainView.findViewById(R.id.nav_background)
         navCityName = navMainView.findViewById(R.id.nav_current_city_name)
         navCurrentTemp = navMainView.findViewById(R.id.nav_current_temperature)
         navIcon = navMainView.findViewById(R.id.nav_current_weather_icon)
+
 
         menu = navView.menu
 
