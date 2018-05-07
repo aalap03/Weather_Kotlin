@@ -21,7 +21,7 @@
             android:gravity="center"
             android:layout_weight="1">
 
-            <com.example.aalap.weatherk.Utils.LatoTextView
+            <com.example.aalap.weatherk.Utils.LRTextView
                 android:id="@+id/timeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:gravity="center"
             android:layout_weight="1">
 
-            <com.example.aalap.weatherk.Utils.LatoTextView
+            <com.example.aalap.weatherk.Utils.LRTextView
                 android:id="@+id/temperatureLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

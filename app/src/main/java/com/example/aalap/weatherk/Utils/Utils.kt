@@ -42,6 +42,35 @@ class Utils {
 
                     else -> R.drawable.wclear_day
                 }
+
+        fun getBackground(icon: String): Int =
+                when (icon) {
+                    "clear-day" -> R.drawable.back_clearday
+
+                    "clear-night" -> R.drawable.back_clearnight
+
+                    "cloudy" -> R.drawable.back_cloudy
+
+                    "partly-cloudy-day" -> R.drawable.back_cloudy
+
+                    "cloudy-night" -> R.drawable.back_cloudynight
+
+                    "partly-cloudy-night" -> R.drawable.back_cloudynight
+
+                    "fog" -> R.drawable.back_foggy
+
+                    "wind" -> R.drawable.back_wind
+
+                    "sleet" -> R.drawable.back_wind
+
+                    "partly-cloudy" -> R.drawable.back_cloudy
+
+                    "rain" -> R.drawable.back_rain
+
+                    "snow" -> R.drawable.back_snow
+
+                    else -> R.drawable.wclear_day
+                }
     }
 
 }

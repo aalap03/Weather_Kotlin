@@ -1,7 +1,9 @@
 package com.example.aalap.weatherk
 
+import android.graphics.Bitmap
 import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.Model.WeatherModel
+import com.example.aalap.weatherk.Utils.App
 import com.example.aalap.weatherk.View.MainView
 
 class Presenter(var view: MainView) {
@@ -12,7 +14,9 @@ class Presenter(var view: MainView) {
 
     fun initiateWeatherRequest(latitude: Double, longitude: Double) {
         model.getForecast(latitude, longitude)
+        App.pref().setSelectedLocation(latitude, longitude)
         model.getPlaceName(latitude, longitude)
+
     }
 
     fun initiatePlaceAPICall(latitude:Double, longitude:Double) {
@@ -33,7 +37,7 @@ class Presenter(var view: MainView) {
     }
 
     fun getPlaceId(placeId: String?) {
-        view.showPlaceInfo(placeId)
+        view.requestPlaceInfo(placeId)
     }
 
     fun noPlaceId() {
@@ -46,5 +50,13 @@ class Presenter(var view: MainView) {
 
     fun requestPlaceName(latitude: Double, longitude: Double) {
         model.getPlaceName(latitude, longitude)
+    }
+
+    fun showPlacePhoto(bitmap: Bitmap?) {
+        view.showPlacePhoto(bitmap)
+    }
+
+    fun requestPlacePhoto(placeId: String?) {
+        model.getPlaceBitmap(placeId!!)
     }
 }

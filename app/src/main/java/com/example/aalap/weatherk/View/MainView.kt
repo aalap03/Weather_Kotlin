@@ -1,5 +1,6 @@
 package com.example.aalap.weatherk.View
 
+import android.graphics.Bitmap
 import com.example.aalap.weatherk.Model.Forecast.Forecast
 
 /**
@@ -13,7 +14,8 @@ interface MainView{
     fun showProgress(visible: Boolean)
     fun showError(errorMsg: String)
     fun showForecast(forecast: Forecast?)
-    fun showPlaceInfo(placeId: String?)
+    fun requestPlaceInfo(placeId: String?)
     fun noPlaceId()
     fun showPlaceName(locality: String?)
+    fun showPlacePhoto(bitmap: Bitmap?)
 }

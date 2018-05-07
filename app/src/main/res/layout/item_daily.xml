@@ -24,7 +24,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content">
-                <com.example.aalap.weatherk.Utils.LatoTextView
+                <com.example.aalap.weatherk.Utils.LRTextView
                     android:id="@+id/day"
                     android:layout_marginLeft="20dp"
                     android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_height="wrap_content">
 
-                <com.example.aalap.weatherk.Utils.LatoTextView
+                <com.example.aalap.weatherk.Utils.LRTextView
                     android:id="@+id/min_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="@color/white" />
 
-                <com.example.aalap.weatherk.Utils.LatoTextView
+                <com.example.aalap.weatherk.Utils.LRTextView
                     android:id="@+id/max_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
 
         </LinearLayout>
 
-        <com.example.aalap.weatherk.Utils.LatoTextView
+        <com.example.aalap.weatherk.Utils.LMTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

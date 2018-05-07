@@ -25,7 +25,6 @@ class CityAdapter(var context: Context, var cities:List<City>): RecyclerView.Ada
         val city = cities.get(position)
         holder.name.text = city.name
         holder.remove.setOnClickListener({ view: View? ->
-            //City().delete { equalTo("id", city.id) }
             cities[position].delete { equalTo("id", city.id) }
             notifyItemRemoved(position)
             notifyDataSetChanged()
