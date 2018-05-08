@@ -14,8 +14,9 @@ interface MainView{
     fun showProgress(visible: Boolean)
     fun showError(errorMsg: String)
     fun showForecast(forecast: Forecast?)
-    fun requestPlaceInfo(placeId: String?)
+    fun requestPlacePhoto(placeId: String?)
     fun noPlaceId()
     fun showPlaceName(locality: String?)
     fun showPlacePhoto(bitmap: Bitmap?)
+    fun openGpsDialog()
 }

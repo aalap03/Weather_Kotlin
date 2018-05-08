@@ -151,6 +151,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (selectedLatitude != -1.0 && selectedLongitude != -1.0)
             presenter.initiateWeatherRequest(selectedLatitude, selectedLongitude)
+
+        val selectedCity = City()
+                .queryFirst { equalTo("latitude", selectedLatitude).equalTo("longitude", selectedLongitude)}
+
+        if(selectedCity != null) {
+            requestPlacePhoto(selectedCity.id)
+        }
     }
 
     override fun onBackPressed() {
@@ -202,13 +209,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-
     override fun showProgress(visible: Boolean) {
         progress.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     override fun showError(errorMsg: String) {
         progress.visibility = View.GONE
+        Log.d(TAG, "Error:!!!!!!!!!!!!$errorMsg")
         Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
     }
 
@@ -276,53 +283,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                             { throwable: Throwable? -> presenter.showErrorMsg(throwable!!.localizedMessage) }))
                         }
                         //gps off
-                        else {
+                        else
+                            presenter.openGpsOrSavedLocationWeather()
 
-                            val selectedLatitude = pref.getSelectedtLatitude()
-                            val selectedLongitude = pref.getSelectedLongitude()
-
-                            val userLatitude = pref.getUserLatitude()
-                            val userLongitude = pref.getUserLongitude()
-
-                            //get last saved user location
-                            if (userLatitude != -1.0 && userLongitude != -1.0) {
-                                presenter.initiateWeatherRequest(userLatitude
-                                        , userLongitude)
-
-                                val queryFirst = City().queryFirst {
-                                    equalTo("latitude", userLatitude)
-                                            .equalTo("longitude", userLongitude)
-                                }
-                                if (queryFirst != null)
-                                    requestPlaceInfo(queryFirst.id)
-                            }
-
-                            //get last opened location
-                            else if (selectedLatitude != -1.0 && selectedLongitude != -1.0) {
-                                presenter.initiateWeatherRequest(selectedLatitude
-                                        , selectedLongitude)
-
-                                val queryFirst = City().queryFirst {
-                                    equalTo("latitude", selectedLatitude)
-                                            .equalTo("longitude", selectedLongitude)
-                                }
-
-                                requestPlaceInfo(queryFirst!!.id)
-                            }
-                            //make user open GPS, this case will be for the first timers...
-                            else {
-                                AlertDialog.Builder(this)
-                                        .setMessage("Please Open GPS to access Location")
-                                        .setNeutralButton("Go to Settings", { dialog, _ ->
-                                            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                                            dialog.dismiss()
-                                        })
-                                        .setCancelable(false)
-                                        .create()
-                                        .show()
-                            }
-
-                        }
                     } else {
                         Toast.makeText(this, "Can not load without location permission", Toast.LENGTH_LONG)
                                 .show()
@@ -364,7 +327,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    override fun requestPlaceInfo(placeId: String?) {
+    override fun requestPlacePhoto(placeId: String?) {
         Log.d(TAG, "onView:$placeId")
         runOnUiThread({
             presenter.requestPlacePhoto(placeId)
@@ -383,9 +346,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun showPlacePhoto(bitmap: Bitmap?) {
-        background.setImageBitmap(bitmap)
-        navBackground.setImageBitmap(bitmap)
+        if(bitmap != null) {
+            background.setImageBitmap(bitmap)
+            navBackground.setImageBitmap(bitmap)
+        } else {
+            Toast.makeText(this, "No photo", Toast.LENGTH_SHORT).show()
+            background.setImageResource(0)
+            navBackground.setImageResource(0)
+        }
 
+    }
+
+    override fun openGpsDialog() {
+        AlertDialog.Builder(this)
+                .setMessage("Please Open GPS to access Location")
+                .setNeutralButton("Go to Settings", { dialog, _ ->
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    dialog.dismiss()
+                })
+                .setCancelable(false)
+                .create()
+                .show()
     }
 
     override fun onDestroy() {

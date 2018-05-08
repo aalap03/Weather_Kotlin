@@ -20,7 +20,7 @@ class Presenter(var view: MainView) {
     }
 
     fun initiatePlaceAPICall(latitude:Double, longitude:Double) {
-        model.getPlaceInfo(latitude, longitude)
+        model.placePhotosCall(latitude, longitude)
     }
 
     fun showErrorMsg(localizedMessage: String?) {
@@ -37,7 +37,7 @@ class Presenter(var view: MainView) {
     }
 
     fun getPlaceId(placeId: String?) {
-        view.requestPlaceInfo(placeId)
+        view.requestPlacePhoto(placeId)
     }
 
     fun noPlaceId() {
@@ -59,4 +59,13 @@ class Presenter(var view: MainView) {
     fun requestPlacePhoto(placeId: String?) {
         model.getPlaceBitmap(placeId!!)
     }
+
+    fun openGpsOrSavedLocationWeather() {
+        model.openGpsOrSavedLocationWeather()
+    }
+
+    fun openGpsDialog() {
+        view.openGpsDialog()
+    }
+
 }
