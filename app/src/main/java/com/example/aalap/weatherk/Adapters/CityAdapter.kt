@@ -11,8 +11,9 @@ import com.example.aalap.weatherk.R
 import com.example.aalap.weatherk.Utils.City
 import com.vicpin.krealmextensions.delete
 
-class CityAdapter(var context: Context, var cities:List<City>): RecyclerView.Adapter<CityAdapter.CityHolder>() {
+class CityAdapter(var context: Context, var cities:MutableList<City>): RecyclerView.Adapter<CityAdapter.CityHolder>() {
 
+    var TAG = "CityAdapter:"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityHolder {
         return CityHolder(LayoutInflater.from(context).inflate(R.layout.city_item, parent, false))
     }
@@ -25,9 +26,9 @@ class CityAdapter(var context: Context, var cities:List<City>): RecyclerView.Ada
         val city = cities.get(position)
         holder.name.text = city.name
         holder.remove.setOnClickListener({ view: View? ->
-            cities[position].delete { equalTo("id", city.id) }
+            cities.removeAt(position)
+            City().delete { equalTo("id", city.id) }
             notifyItemRemoved(position)
-            notifyDataSetChanged()
         })
     }
 

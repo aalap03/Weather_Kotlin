@@ -11,21 +11,19 @@ import com.example.aalap.weatherk.RetrofitCreator.RetrofitServiceWeather
 import com.example.aalap.weatherk.Utils.App
 import com.example.aalap.weatherk.Utils.City
 import com.example.aalap.weatherk.Utils.Preference
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse
 import com.google.android.gms.location.places.Places
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.vicpin.krealmextensions.queryAll
 import com.vicpin.krealmextensions.queryFirst
+import io.reactivex.*
 import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.ObservableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.internal.operators.single.SingleToObservable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import org.json.JSONObject
 import retrofit2.Response
 import java.io.IOException
@@ -87,7 +85,14 @@ class WeatherModel(var presenter: Presenter) {
             add = add + "\n" + obj.locality
             add = add + "\n" + obj.subThoroughfare
 
-            presenter.ShowPlaceName(obj.locality)
+            if (obj.locality != null)
+                presenter.ShowPlaceName(obj.locality)
+            else if (obj.subAdminArea != null)
+                presenter.ShowPlaceName(obj.subAdminArea)
+            else if (obj.adminArea != null)
+                presenter.ShowPlaceName(obj.adminArea)
+            else
+                presenter.ShowPlaceName(obj.postalCode + obj.countryName)
 
             Log.v(TAG, "Address:$add")
 
@@ -97,95 +102,73 @@ class WeatherModel(var presenter: Presenter) {
         }
     }
 
-    fun placeName(latitude: Double, longitude: Double): String {
-
-        var cityName = "Not found"
-        val geocoder = Geocoder(App.applicationContext(), Locale.getDefault())
-        try {
-
-            val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-            val obj = addresses.get(0)
-            var add = obj.getAddressLine(0)
-            cityName = obj.locality
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return cityName
-    }
-
     fun placePhotosCall(latitude: Double, longitude: Double) {
 
         var latLngConcat = latitude.toString() + "," + longitude.toString()
 
         Log.d(TAG, "Photos:$latLngConcat")
         retrofitServicePhotos.getResult(latLngConcat, "AIzaSyC-H5AtUPSdpX7ZnCG7YsKeX4vpJQpGni0")
-                .flatMap { result ->
+                .flatMap { result -> listOfPlaceIds(result) }
+                .map { placeId: String -> taskCompleteObservable(placeId) }
+                .filter { t: Observable<PlacePhotoMetadataBuffer> -> t.blockingFirst().count > 0 }
+                .firstElement()
+                .map { task ->
+                    task.map { t: PlacePhotoMetadataBuffer ->
+                        val random = Random()
+                        val total = t.count
+                        var randomIndex = random.nextInt(total - 1)
 
-                    var placeIds: ArrayList<String> = ArrayList()
+                        Log.d(TAG, "Photos: mapping inside map:$total:random:$randomIndex")
+                        geoDataClient.getPhoto(t[randomIndex])
+                                .addOnCompleteListener({ task ->
+                                    val bitmap = task.result.bitmap
+                                    presenter.showPlacePhoto(bitmap)
+                                })
 
-                    if (result.isSuccessful) {
-                        var resultMain = result.body()!!.string()
-                        Log.d(TAG, "Photos: Suc")
-                        val mainResult = JSONObject(resultMain)
-                        val resultsArray = mainResult.getJSONArray("results")
-
-
-                        if (resultsArray.length() > 0) {
-                            for (i in 0..(resultsArray.length() - 1)) {
-                                val result = resultsArray.getJSONObject(i)
-                                val placeId = result.getString("place_id")
-                                placeIds.add(result.getString("place_id"))
-
-                            }
-                        } else {
-
-                        }
-
-                    } else {
-                        throw RuntimeException(result.errorBody()!!.string())
-                    }
-
-                    Observable.fromIterable(placeIds)
-                }.flatMap { placeId: String ->
-
-                    Observable.just(geoDataClient.getPlacePhotos(placeId).addOnCompleteListener({ task ->
-                        var total = task.result.photoMetadata.count
-                        Log.d(TAG, "Photos: flatmap Listener"+total)
-                    }))
+                    }.subscribe()
                 }
-
-
-//                    placePhotos.addOnCompleteListener({ task ->
-//                        val result = task.result
-//                        val photoMetadata = result.photoMetadata
-//                        val totalPhotos = photoMetadata.count
-//
-//                        Log.d(TAG, "showPlacePhoto:$placeId$:Photos:$totalPhotos")
-//
-//                        if (totalPhotos > 0) {
-//                            val random = Random()
-//                            var randomIndex = 0
-//                            if (totalPhotos > 1) {
-//                                randomIndex = random.nextInt(totalPhotos - 1)
-//                            }
-//
-//                            geoDataClient.getPhoto(photoMetadata[randomIndex])
-//                                    .addOnCompleteListener({ task ->
-//                                        val bitmap = task.result.bitmap
-//                                        presenter.showPlacePhoto(bitmap)
-//                                    })
-//                        }
-//                    })
-
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result ->
-                    Log.d(TAG, "Photos: :onNxt")
+                .subscribe({ task ->
+                    Log.d(TAG, "Photos: onNxt")
                 },
                         { throwable: Throwable? -> Log.d(TAG, "Photos: Th " + throwable!!.localizedMessage) })
+
     }
 
+    fun taskCompleteObservable(placeId: String): Observable<PlacePhotoMetadataBuffer>? {
+        return Observable.create<PlacePhotoMetadataBuffer> { subscriber ->
+            geoDataClient.getPlacePhotos(placeId).addOnCompleteListener({ task ->
+                subscriber.onNext(task.result.photoMetadata)
+            })
+        }
+    }
+
+    private fun listOfPlaceIds(result: Response<ResponseBody>): Observable<String>? {
+        val placeIds: ArrayList<String> = ArrayList()
+
+        if (result.isSuccessful) {
+            val resultMain = result.body()!!.string()
+            Log.d(TAG, "Photos: Suc")
+            val mainResult = JSONObject(resultMain)
+            val resultsArray = mainResult.getJSONArray("results")
+
+
+            if (resultsArray.length() > 0) {
+                for (i in 0..(resultsArray.length() - 1)) {
+                    placeIds.add(resultsArray.getJSONObject(i).getString("place_id"))
+                }
+            } else {
+
+            }
+
+        } else {
+            throw RuntimeException(result.errorBody()!!.string())
+        }
+
+        Log.d(TAG, "Photos: total ids " + placeIds.size)
+        return Observable.fromIterable(placeIds)
+    }
 
 
     fun getPlaceBitmap(placeId: String) {
@@ -260,37 +243,5 @@ class WeatherModel(var presenter: Presenter) {
         //open GPS.. this case will be for first times only
         else
             presenter.openGpsDialog()
-    }
-
-    fun lookupPlacePhotos(placeIds: ArrayList<String>) {
-        for (placeId in placeIds) {
-
-            val placePhotos = geoDataClient.getPlacePhotos(placeId)
-
-
-
-            placePhotos.addOnCompleteListener({ task ->
-                val result = task.result
-                val photoMetadata = result.photoMetadata
-                val totalPhotos = photoMetadata.count
-
-                Log.d(TAG, "showPlacePhoto:$placeId$:Photos:$totalPhotos")
-
-                if (totalPhotos > 0) {
-                    val random = Random()
-                    var randomIndex = 0
-                    if (totalPhotos > 1) {
-                        randomIndex = random.nextInt(totalPhotos - 1)
-                    }
-
-                    geoDataClient.getPhoto(photoMetadata[randomIndex])
-                            .addOnCompleteListener({ task ->
-                                val bitmap = task.result.bitmap
-                                presenter.showPlacePhoto(bitmap)
-                            })
-                    exitProcess(0)
-                }
-            })
-        }
     }
 }

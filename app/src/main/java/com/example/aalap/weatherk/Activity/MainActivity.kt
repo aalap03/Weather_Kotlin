@@ -314,7 +314,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                     Log.d(WeatherModel.TAG, "RealmCity:"+City().queryAll().size)
 
-                    var placeId = place.id
+                    val placeId = place.id
                     presenter.requestPlacePhoto(placeId)
                 }
 

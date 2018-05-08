@@ -19,6 +19,8 @@ class RemoveCity : AppCompatActivity() {
         recyclerView = findViewById(R.id.city_recycler)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        recyclerView.adapter = CityAdapter(this, City().queryAll())
+        var list:MutableList<City> = mutableListOf()
+        list.addAll(City().queryAll())
+        recyclerView.adapter = CityAdapter(this, list)
     }
 }
