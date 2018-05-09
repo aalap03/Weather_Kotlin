@@ -23,6 +23,7 @@ import android.view.*
 import android.widget.*
 import com.example.aalap.weatherk.Adapters.AdapterDaily
 import com.example.aalap.weatherk.Adapters.AdapterHourly
+import com.example.aalap.weatherk.Adapters.CityAdapter
 import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.Model.WeatherModel
 import com.example.aalap.weatherk.Presenter
@@ -70,11 +71,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var refresh: ImageView
     private lateinit var pref: Preference
     var compositeDisposable = CompositeDisposable()
-    lateinit var navIcon:ImageView
-    lateinit var navCityName:TextView
-    lateinit var navCurrentTemp:TextView
-    lateinit var navBackground:ImageView
-    lateinit var drawerMain:ViewGroup
+    lateinit var navIcon: ImageView
+    lateinit var navCityName: TextView
+    lateinit var navCurrentTemp: TextView
+    lateinit var navBackground: ImageView
+    lateinit var drawerMain: ViewGroup
+    var gpsAlert = false
 
 
     companion object {
@@ -141,23 +143,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun refreshWeather() {
-
-        Toast.makeText(this, "Refreshing.....",Toast.LENGTH_SHORT).show()
-
+        Toast.makeText(this, "Refreshing.....", Toast.LENGTH_SHORT).show()
         progress.visibility = View.VISIBLE
-
-        val selectedLatitude = pref.getSelectedtLatitude()
-        val selectedLongitude = pref.getSelectedLongitude()
-
-        if (selectedLatitude != -1.0 && selectedLongitude != -1.0)
-            presenter.initiateWeatherRequest(selectedLatitude, selectedLongitude)
-
-        val selectedCity = City()
-                .queryFirst { equalTo("latitude", selectedLatitude).equalTo("longitude", selectedLongitude)}
-
-        if(selectedCity != null) {
-            requestPlacePhoto(selectedCity.id)
-        }
+        var city = pref.getSelectedCity()
+        presenter.initiateWeatherRequest(city!!.latitude, city.longitude)
+        presenter.requestPlacePhoto(city.id)
+        presenter.showPlaceName(city.name)
     }
 
     override fun onBackPressed() {
@@ -175,6 +166,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (city != null) {
             presenter.initiateWeatherRequest(city.latitude, city.longitude)
             presenter.requestPlacePhoto(city.id)
+            presenter.showPlaceName(city.name)
+            pref.setSelectedCity(city.id)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
@@ -188,6 +181,28 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         setDrawerItems()
+
+        if(gpsAlert) {
+            handlePermission()
+            gpsAlert = false
+        }
+
+        if(CityAdapter.cityDeleted){
+            val firstCity = City().queryFirst()
+
+            if(firstCity != null) {
+                presenter.initiateWeatherRequest(firstCity.latitude, firstCity.longitude)
+                presenter.requestPlacePhoto(firstCity.id)
+                presenter.showPlaceName(firstCity.name)
+                pref.setSelectedCity(firstCity.id)
+
+            }else {
+                handlePermission()
+            }
+
+            CityAdapter.cityDeleted = false
+
+        }
     }
 
     override fun setRecyclerViews() {
@@ -265,20 +280,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .subscribe({ granted ->
                     if (granted) {
 
+                        Log.d(TAG, "Photos: GPS?" + locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                        Log.d(TAG, "Photos: Network?" + locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+
                         //gps on
-                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 
                             compositeDisposable.add(locationProvider.getUpdatedLocation(locationRequest)
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribeOn(Schedulers.io())
                                     .subscribe({ location: Location? ->
-
+                                        Log.d(TAG, "Photos:")
                                         presenter.initiateWeatherRequest(location!!.latitude, location.longitude)
-
                                         presenter.initiatePlaceAPICall(location.latitude, location.longitude)
-
-                                        pref.setUserLocation(location.latitude, location.longitude)
-
                                     },
                                             { throwable: Throwable? -> presenter.showErrorMsg(throwable!!.localizedMessage) }))
                         }
@@ -304,18 +319,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                     val place = PlaceAutocomplete.getPlace(this, data)
 
-                    presenter.initiateWeatherRequest(place.latLng.latitude, place.latLng.longitude)
-                    showPlaceName(place.name as String?)
-
                     City(place.id,
                             place.latLng.latitude,
                             place.latLng.longitude,
                             place.name.toString()).save()
-
-                    Log.d(WeatherModel.TAG, "RealmCity:"+City().queryAll().size)
-
                     val placeId = place.id
+
+                    presenter.initiateWeatherRequest(place.latLng.latitude, place.latLng.longitude)
                     presenter.requestPlacePhoto(placeId)
+                    presenter.showPlaceName(place.name.toString())
+
+                    pref.setSelectedCity(placeId)
+
                 }
 
                 PlaceAutocomplete.RESULT_ERROR -> {
@@ -329,15 +344,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun requestPlacePhoto(placeId: String?) {
         Log.d(TAG, "onView:$placeId")
-        runOnUiThread({
-            presenter.requestPlacePhoto(placeId)
-        })
+        presenter.requestPlacePhoto(placeId)
     }
 
     override fun noPlaceId() {
-        runOnUiThread({
-            Toast.makeText(this, "No placeId", Toast.LENGTH_SHORT).show()
-        })
+        Toast.makeText(this, "No placeId", Toast.LENGTH_SHORT).show()
     }
 
     override fun showPlaceName(cityName: String?) {
@@ -346,7 +357,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun showPlacePhoto(bitmap: Bitmap?) {
-        if(bitmap != null) {
+        if (bitmap != null) {
             background.setImageBitmap(bitmap)
             navBackground.setImageBitmap(bitmap)
         } else {
@@ -361,6 +372,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         AlertDialog.Builder(this)
                 .setMessage("Please Open GPS to access Location")
                 .setNeutralButton("Go to Settings", { dialog, _ ->
+                    gpsAlert = true
                     startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     dialog.dismiss()
                 })

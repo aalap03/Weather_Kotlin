@@ -13,7 +13,7 @@
         android:src="@drawable/delete"
         android:layout_height="match_parent" />
 
-    <TextView
+    <com.example.aalap.weatherk.Utils.LMTextView
         android:gravity="center_vertical"
         android:id="@+id/city_name"
         android:layout_width="0dp"

@@ -13,6 +13,10 @@ import com.vicpin.krealmextensions.delete
 
 class CityAdapter(var context: Context, var cities:MutableList<City>): RecyclerView.Adapter<CityAdapter.CityHolder>() {
 
+
+    companion object {
+        var cityDeleted = false
+    }
     var TAG = "CityAdapter:"
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityHolder {
         return CityHolder(LayoutInflater.from(context).inflate(R.layout.city_item, parent, false))
@@ -29,6 +33,8 @@ class CityAdapter(var context: Context, var cities:MutableList<City>): RecyclerV
             cities.removeAt(position)
             City().delete { equalTo("id", city.id) }
             notifyItemRemoved(position)
+            notifyDataSetChanged()
+            cityDeleted = true
         })
     }
 
