@@ -4,11 +4,9 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.example.aalap.weatherk.Model.Forecast.Forecast
 import com.example.aalap.weatherk.Model.WeatherModel
-import com.example.aalap.weatherk.Utils.App
-import com.example.aalap.weatherk.Utils.City
 import com.example.aalap.weatherk.View.MainView
 
-class Presenter(var view: MainView) {
+open class Presenter(var view: MainView) {
 
     val TAG = "Presenter"
 
@@ -17,7 +15,6 @@ class Presenter(var view: MainView) {
     fun initiateWeatherRequest(latitude: Double, longitude: Double) {
         model.getForecast(latitude, longitude)
         model.getPlaceName(latitude, longitude)
-
     }
 
     fun initiatePlaceAPICall(latitude:Double, longitude:Double) {
@@ -38,20 +35,8 @@ class Presenter(var view: MainView) {
         view.showForecast(forecast)
     }
 
-    fun getPlaceId(placeId: String?) {
-        view.requestPlacePhoto(placeId)
-    }
-
-    fun noPlaceId() {
-        view.noPlaceId()
-    }
-
     fun showPlaceName(locality: String?) {
         view.showPlaceName(locality)
-    }
-
-    fun requestPlaceName(latitude: Double, longitude: Double) {
-        model.getPlaceName(latitude, longitude)
     }
 
     fun showPlacePhoto(bitmap: Bitmap?) {
@@ -69,5 +54,4 @@ class Presenter(var view: MainView) {
     fun openGpsDialog() {
         view.openGpsDialog()
     }
-
 }

@@ -12,7 +12,6 @@ import com.example.aalap.weatherk.Utils.City
 import com.example.aalap.weatherk.Utils.Preference
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer
 import com.google.android.gms.location.places.Places
-import com.vicpin.krealmextensions.queryFirst
 import com.vicpin.krealmextensions.save
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -116,7 +115,7 @@ class WeatherModel(var presenter: Presenter) {
                     task.map { t: PlacePhotoMetadataBuffer ->
                         val random = Random()
                         val total = t.count
-                        var randomIndex = random.nextInt(total - 1)
+                        val randomIndex = random.nextInt(total - 1)
 
                         Log.d(TAG, "Photos: mapping inside map:$total:random:$randomIndex")
                         geoDataClient.getPhoto(t[randomIndex])
@@ -163,8 +162,6 @@ class WeatherModel(var presenter: Presenter) {
                 for (i in 0..(resultsArray.length() - 1)) {
                     placeIds.add(resultsArray.getJSONObject(i).getString("place_id"))
                 }
-            } else {
-
             }
 
         } else {
